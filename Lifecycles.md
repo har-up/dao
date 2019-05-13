@@ -51,7 +51,7 @@ def lifecycle_version = "2.0.0"
 
 ## 上手使用
  - **使用ViewModel**
-  使用ViewModel使数据状态更持久,当Activity因转换横竖屏虽然会重新销毁创建，但中间ViewModel的不会销毁。
+  使用ViewModel使数据状态更持久,当Activity因转换横竖屏虽然会重新销毁创建，但中间ViewModel的不会销毁.
     ![](https://codelabs.developers.google.com/codelabs/android-lifecycles/img/1d42e8efcb42ff58.png)
   
  - **使用LiveData**
