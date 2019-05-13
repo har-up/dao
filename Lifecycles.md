@@ -57,8 +57,7 @@ def lifecycle_version = "2.0.0"
  - **使用LiveData**
     
     - 创建LiveData对象  
-      LiveData不可修改值，只供观察 
-      MutableLiveData可以更改值
+      LiveData不可修改值，只供观察;MutableLiveData可以更改值
       ```java
       private MutableLiveData<Long> mElapsedTime = new MutableLiveData<>();
       ```
