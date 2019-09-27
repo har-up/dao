@@ -1,0 +1,28 @@
+- 问题描述：  
+  在开发webapp时，经常会有这样的情景：页面底部有一个输入框，当点击输入框时弹出手机的软键盘后会导致输入框不可见
+     
+- 解决方案
+  - 监听软键盘的弹出和隐藏
+    在vue页面的mounted生命钩子中注册监听
+    ```javascript
+    let height = document.body.clientHeight
+    window.onresize = () =>{
+      return (()=>{
+        if(document.body.clientHeight < height){
+          this.$notify('show softkeyboard')
+        }else{
+          this.$notify('hide softkeyboard')
+        }
+      })()
+    }
+    ```
+   - computed修改样式   
+    - 弄一个全局变量keyboard:false
+    - 在computed中创建一个样式返回
+      ```javascript
+        computed:{
+          getClass(){
+            return keyboard ? 'class_keyboard' : 'class_normal'
+          }
+        }
+      ```
