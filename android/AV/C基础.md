@@ -241,14 +241,16 @@ struct People {
   int age;
   void (*say)();
 }
-```
+
 void sayHello(){
   printf("hello");
 }
 
 void main(){
   struct People people;
-  people.say = sayHello;
+  people.say = sayHello; // 这里两种方式都可以
+  people.say = &sayHello;
   people.say();
 }
+```
   
