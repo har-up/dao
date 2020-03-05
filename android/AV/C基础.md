@@ -119,4 +119,136 @@ char* str = "hello world";
 printf("%s\n",str) // hello world;
 pringtf("%#x\b",str) //字符串首地址
 ```
+
+## 结构体
+结构体是一种自定义构造数据类型,把多个其他数据类型整合组合成一个数据类型。
+- 关键字 struct
+```c
+  //声明结构体时不能初始化数据的
+  struct People {
+    int age;
+    char name [20];
+  }
+  
+  void main(){
+    //1
+    struct People people1 = {18, "james"};
+    
+    //
+    struct People people2;
+    people2.age = 28;
+    //people2.name = "james"; //注意：当我们定义数据为字符数组的时候不能直接这样赋值；使用这种方式赋值，可以使用字符指针来声明数据类型；
+    //sprintf(people2.name,"james");//可以使用这种方法赋值；还有string.h中的strcpy;
+    printf("%d\n",people1.name)
+  }
+```
+
+- 结构体的另外几种写法
+```c
+  //在结构体后面声明结构体的变量
+  struct People {
+    int age;
+  }one,two={18};
+  
+  //匿名结构体，可以限制结构体变量的数量
+  struct {
+    int age;
+    char* name;
+  }singleInstance
+  
+  //结构体嵌套
+  struct Teacher {
+    char* programe;
+    int age;
+  }
+  
+  struct Student {
+    int age;
+    struct Teacher teacher;
+  }
+  
+  // 也可以直接在Student结构体种申明老师的结构体
+  struct Student {
+    int age;
+    struct Teacher {
+      int age;
+      Char* programe;
+    } teacher;
+  }
+  //访问方式
+  struct Student student;
+  student.teacher.age = 18;
+```
+
+- 结构体与指针
+```c
+  //通过指针访问结构体的变量
+  struct Student {
+    int age;
+    char* name;
+  }
+  
+  void main(){
+    struct Student student = {18,"james"}
+    //指针指向这个变量
+    struce Student* p = &student;
+    printf("%d,%s\n", *p.age, p->name) //可以通过这两种方式拿到变量的值
+  }
+  
+  //指针和结构体数组
+  struct Student students[] = {{20,"james"},{18,"zion"}}
+  //声明Student类型的指针
+  struct Student* student_p;
+  student_p = &student;
+  
+  //遍历1
+  struct Student* loop_p = student_p;
+  for (; loop_p < student_p + 2; ++loop_p) {
+    printf("%d,%s\n",loop_p->age,loop_p->name);
+  }
+
+  //遍历2
+  for (int i = 0; i < sizeof(students) / sizeof(struct Student); ++i) {
+    printf("%d,%s\n",students[i].age,students[i].name);
+  }
+  
+```
+
+- typedef
+给类型取别名
+```
+  struct Student {
+    int age;
+    char* name;
+  }
+  
+  //取别名Student,以后声明可不用写struct
+  typedef struct Student Student;
+  
+  也可以直接在定义时取别名
+  typedef struct Student{
+    int age;
+  }Student,*P;
+  
+  //使用方式
+  Student student = {18};
+  P p = &student;
+```
+
+- 结构体函数指针
+```
+struct People {
+  int age;
+  void (*say)();
+}
+```
+void sayHello(){
+  printf("hello");
+}
+
+void main(){
+  struct People people;
+  people.say = sayHello;
+  people.say();
+}
   
