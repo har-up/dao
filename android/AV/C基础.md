@@ -294,3 +294,82 @@ void main(){
     printf("%d\n",week)  //6
   }
 ```
+
+## IO
+文件流打开mode
+  "r" 以只读方式打开文件，该文件必须存在。  
+  "w" 打开只写文件，若文件存在则文件长度清为0，即该文件内容会消失。若文件不存在则建立该文件。  
+  "w+" 打开可读写文件，若文件存在则文件长度清为零，即该文件内容会消失。若文件不存在则建立该文件。  
+  "a" 以附加的方式打开只写文件。若文件不存在，则会建立该文件，如果文件存在，写入的数据会被加到文件尾，即文件原先的内容会被保留。（EOF符保留）  
+  "a+" 以附加方式打开可读写的文件。若文件不存在，则会建立该文件，如果文件存在，写入的数据会被加到文件尾后，即文件原先的内容会被保留。（原来的EOF符不保留）  
+  "wb" 只写打开或新建一个二进制文件，只允许写数据。  
+  "wb+" 读写打开或建立一个二进制文件，允许读和写。  
+  "ab" 追加打开一个二进制文件，并在文件末尾写数据。  
+  "ab+"读写打开一个二进制文件，允许读，或在文件末追加数据。  
+  
+  
+- 读文件
+```c
+  //读文件
+void main(){
+    char* filePath = "D:\\CLion 2018.1.5\\workspace\\vectordemo\\test_io.txt";
+    FILE* stream = fopen(filePath,"w+");
+    if (stream == NULL){
+        printf("FILE NOT FOUND");
+    }
+    char buffer[50];
+    while(fgets(buffer,50,stream)) {
+        printf("%s", buffer);
+    }
+    fclose(stream);
+}
+```
+- 写文件
+```c
+//写文件
+void main(){
+    char* filePath = "D:\\CLion 2018.1.5\\workspace\\vectordemo\\test_new.txt";
+    FILE* stream = fopen(filePath,"w");
+
+    char* content = "write content";
+    fputs(content,stream);
+    fclose(stream);
+}
+
+//附加写文件
+void main(){
+    char* filePath = "D:\\CLion 2018.1.5\\workspace\\vectordemo\\test_new.txt";
+    FILE* stream = fopen(filePath,"a");
+
+    char* content = " add content";
+    fputs(content,stream);
+    fclose(stream);
+} 
+
+//文件复制
+void main(){
+    char* filePath = "D:\\CLion 2018.1.5\\workspace\\vectordemo\\test_new.txt";
+    char* fileCopyPath = "D:\\CLion 2018.1.5\\workspace\\vectordemo\\test_copy.txt";
+    FILE* stream = fopen(filePath,"rb");
+
+    FILE* write_stream = fopen(fileCopyPath,"wb");
+    char buffer [50];
+    int len = 0;
+    while( (len = fread(buffer, sizeof(char),50,stream)) != 0){
+        fwrite(buffer, sizeof(char),len,write_stream);
+    };
+    fclose(write_stream);
+    fclose(stream);
+}
+
+//文件大小
+void main(){
+    char* filePath = "D:\\CLion 2018.1.5\\workspace\\vectordemo\\test_new.txt";
+    char* fileCopyPath = "D:\\CLion 2018.1.5\\workspace\\vectordemo\\test_copy.txt";
+
+    FILE* stream = fopen(filePath,"rb");
+    fseek(stream,0,SEEK_END); //把游标指向末尾的偏移为0的地方
+    long length = ftell(stream);//返回游标位置与文件开始位置的偏移量
+    printf("%d\n",length);
+}
+```
