@@ -373,3 +373,27 @@ void main(){
     printf("%d\n",length);
 }
 ```
+
+## C代码编译
+- 编译执行流程  
+预编译 -> 编译（.obj） -> 连接（将目标代码与C函数库连接合并，形成最终的可执行文件） -> 执行
+
+- #define的使用
+#define属于预编译指令
+  - 定义标志
+  ```c
+  配合if语句使用
+  #ifdef
+  #define
+  ```
+  - 定义常数
+  ```c
+  #define VALUE 100;
+  ```
+  - 定义宏函数
+  ```c
+  #define jni(NAME) com_example_##NAME()
+  
+  jni(hello)// 等于定义了 com_example_hello() 方法
+  ```
+  
