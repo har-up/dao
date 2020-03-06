@@ -254,3 +254,43 @@ void main(){
 }
 ```
   
+## 联合体
+联合体内的数据只能有一个生效。给联合体中的一个属性赋值，另一个值就会置空。
+```c
+  union Value{
+    int num;
+    
+    float fnum;
+    
+    char* str;
+  }
+  
+  void main(){
+    union Value value;
+    value.num = 1;
+    value.fnum = 2.0;
+    value.str = "hello";
+    //此时只要str的值是有效的
+    printf("%d,%f,%s\n",value.num,value.funm,value.str);
+  }
+```
+
+## 枚举
+关键字 - enum
+```c
+  enum Week{
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+    Sunday
+  }
+  
+  void main(){
+    enum Week week;
+    week = Sunday;
+    printf("%d\n",week)  //6
+  }
+```
