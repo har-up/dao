@@ -340,7 +340,7 @@ void main(){
     cout << m.getB() << endl;
 }
 ```
-## 模板类继承模板类
+- 模板类继承模板类
 ```c++
 template <class T>
 class B{
@@ -374,5 +374,48 @@ private:
 void main(){
     N<int> n = N<int>(100,200);
     cout << n.getB() << n.getN() << endl;
+}
+```
+
+## 异常处理
+- 异常抛出捕获
+```c++
+// 可以直接抛出任何对象
+void count(int num){
+    if (num > 10){
+        throw "数字过大";
+    }
+}
+
+class MyException{
+
+};
+void count(int num) throw (MyException,int){   //定义抛出的异常类型
+    throw int
+}
+
+void main(){
+    try {
+        count(30);
+    }catch (const char* msg){  //可以根据throw的任何对象类型进行捕获
+        cout << msg << endl;
+    }catch (...){  //捕获类型不确定时用 ...；
+        cout << "类型不确定" << endl;
+    }
+}
+```
+
+- c++中的标准异常
+```c++
+void count(int num) throw (MyException){
+    throw out_of_range("标准异常之超出范围");
+}
+
+void main(){
+    try {
+        count(3);
+    }catch (out_of_range e){
+        cout << e.what() << endl;
+    }
 }
 ```
