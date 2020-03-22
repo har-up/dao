@@ -295,3 +295,84 @@ void log(T t){
     cout << t << endl;
 }
 ```
+
+## 模板类
+- 类的某个属性不确定时，可以定义模板类。这种情况下定义模板时的关键字class和typename作用一样
+```c++
+template <class T>
+class B{
+public:
+    B(T t){
+        this->t = t;
+    }
+
+    int getA(){
+        return t;
+    }
+private:
+    T t;
+};
+
+void main(){
+  B<int> b = B<Int>(10);
+}
+
+```
+
+- 继承模板类
+```c++
+class M: public B<int>{ //继承时指定模板类中的泛型类型
+public:
+    M(int a,int b): B<int>(b){
+        this-> a = a;
+    }
+
+    int getA(){
+        return a;
+    }
+private:
+    int a;
+};
+
+void main(){
+    M m = M(10,20);
+    cout << m.getA() << endl;
+    cout << m.getB() << endl;
+}
+```
+## 模板类继承模板类
+```c++
+template <class T>
+class B{
+public:
+    B(T t){
+        this->t = t;
+    }
+
+    int getB(){
+        return t;
+    }
+private:
+    T t;
+};
+
+template <class T>
+class N: public B<T>{
+public:
+    N(T n,T t):B<T>(t){
+        this->n = n;
+    }
+
+    int getN(){
+        return n;
+    }
+
+private:
+    T n;
+};
+
+void main(){
+    N<int> n = N<int>(100,200);
+    cout << n.getB() << n.getN() << endl;
+}
+```
