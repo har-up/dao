@@ -426,3 +426,23 @@ void main(){
 - const_cast  可以把常量转成一个指针从而进行修改
 - dynamic_cast  两个子类转型时会多态检测，如果给定的对象是另一个子类对象时，会转型失败
 - reIntercepter_cast 函数指针转换
+
+## IO
+```c++
+    char* filename = "C:\\Users\\Administrator\\Desktop\\iotest.txt";
+    char* filename2 = "C:\\Users\\Administrator\\Desktop\\iotest2.txt";
+    ofstream out(filename2,ios::binary);
+    ifstream in(filename,ios::binary);
+    if (out.bad()){
+        cout << "打开文件异常"  << endl;
+    }
+
+    while (!in.eof()){
+        char  buffer [1024] = {"0"};
+        in.read(buffer, 1024);
+        out.write(buffer, sizeof(buffer));
+    }
+
+    out.close();
+    in.close();
+```
