@@ -275,3 +275,8 @@ JNIEXPORT void JNICALL Java_com_jni_JniTest_initIds(JNIEnv *env, jclass jcls){
 	random_mid = (*env)->GetMethodID(env, jcls, "genRandomInt", "(I)I");
 }
 ```
+
+## Local Reference
+  当线程从java执行切换到Native上下文时，都会针对一个Native method调用创建一个Local Reference表，在这个Native method执行过程中
+  每次引用到java对象都会在表中插入一条local reference。虽然在Native method执行结束后会自动删除这些引用，但当一个Native method
+  中引用很多java对象时，就会英文超出Local Reference表内存的限制而报错，所以在引用后不需要时需要释放掉这个引用。
