@@ -47,6 +47,23 @@ app:$(FILES)
 %.o:%.c 
 ```
 
+### 递归展开式
+可以引用还没有定义的变量，会往下找相应的变量
+```makefile
+str2 = $(str1)
+str1 = test
+```
+### 直接展开式
+被引用的变量需在引用之前定义
+```makefile
+str := test
+str2 = $(str)
+```
+### 变量追加
+```makefile
+
+```
+
 ## 函数
 - wildcard
 ```makefile
