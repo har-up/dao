@@ -174,5 +174,6 @@ EventBus是一个简单易用的用于组件间通信的开源库
   EventBus eventBus = EventBus.getDefault();
   ```
   
-  
+## 原理
+  通过反射（后面版本加了注释解释器）来获取订阅对象和订阅方法，形成一个对应的订阅关系对象，然后把该对象放入一个全局容器subscriptionsByEventType,这是一个map容器，key是事件类（即自定义的事件类），value就是订阅关系对象。当post事件时就会根据事件的类行去查找到一个或多个订阅关系对象，从而通过反射机制调用其订阅方法。
   
