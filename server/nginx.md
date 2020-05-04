@@ -37,9 +37,9 @@ nginx是一个免费开源的http服务器，邮件代理服务器，通用的�
   ```
   
   - nginx rtmp模块编译模板
-  ```shell
-  wget https://github.com/arut/nginx-rtmp-module/archive/master.zip
-  ```
+    ```shell
+    wget https://github.com/arut/nginx-rtmp-module/archive/master.zip
+    ```
   - 解压两个下载文件
     ```
     tar -zxvf nginx-1.8.0.tar.gz
