@@ -92,7 +92,7 @@ def lifecycle_version = "2.0.0"
        ```
     - 原理
       从LiveData的子类MutableLiveData来解析下LiveData的原理
-      - 首先在给MutableLiveData对象添加订阅时传递两个参数，一个是生命周期持有者（Activity/Fragment），一个是Observer对象用于接收MutableLiveData对象值改变的回调事件。MutableLiveData会更具两个参数来生成一个包装对象来存储两个数据，然后添加到一个数组中（代表可能有多个订阅）。
+      - 首先在给MutableLiveData对象添加订阅时传递两个参数，一个是生命周期持有者（Activity/Fragment），一个是Observer对象用于接收MutableLiveData对象值改变的回调事件。MutableLiveData会更具两个参数来生成一个包装对象来存储两个数据，然后添加到一个Map容器中（代表可能有多个订阅）。
       - 当MutableLiveData对象的值改变时，回调用其setValue()方法，在setValue方法中会遍历该MutableLiveData对象的所有订阅，然后判断持有者（Activity/Fragment)当前是否处于ACTIVE状态（Started/Resume），如果是则触发其中的回调事件。
     
 - **订阅生命周期事件**
