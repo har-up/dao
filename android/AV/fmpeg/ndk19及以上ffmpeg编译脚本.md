@@ -1,9 +1,10 @@
 ```shell
-
-PLATFORM=armv7a
-TARGET=$PLATFORM-linux-androideabi
-TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/windows-x86_64/bin
-SYSROOT=$NDK/sysroot
+export NDK=/usr/ndk/android-ndk-r21
+export SYSROOT=$NDK/sysroot
+export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
+export ARCH=arm
+export PLATFORM=armv7a
+export TARGET=$PLATFORM-linux-androideabi
 PREFIX=`dirname $0`/Android/$PLATFORM
  
 CFLAG="-D__ANDROID_API__=$API -U_FILE_OFFSET_BITS -DBIONIC_IOCTL_NO_SIGNEDNESS_OVERLOAD -Os -fPIC -DANDROID -D__thumb__ -mthumb -Wfatal-errors -Wno-deprecated -mfloat-abi=softfp -marm"
