@@ -1,11 +1,10 @@
-## Android中文件路劲
+## Android中文件路径
 Android系统为每个app分配限定的内存空间，当访问自己app内存时不需要申请权限。当要访问系统内存时需要在清单文件中申明权限，且在api19以后还需要在app
 中动态授权
-以下为搬运网络中的资料：
+以下为搬运网络中的资料：   
 需要注意的是：
 - 每个手机厂商可能会对目录进行了不同的修改，所以不一定正确。比如小米手机中的、storage/sdcard0/ 对应 /storage/emulated/0/，
 且改目录对应手机文件管理中的"内部存储设备/"
-- 手机文件管理中的/storage/sdcard0 /storage/emulated/0/
 ### System directories
 
 | Method | Result |
