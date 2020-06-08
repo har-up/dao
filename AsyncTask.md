@@ -12,7 +12,8 @@ AsyncTask是一个Android中用于多线程任务类。可以通过实现类（�
 
   - 先判断当前这个AsyncTask对象是否在执行状态或执行完成，然后调用其抽象方法onPreExecute（在真正执行线程任务前执行的回调);
 
-  - 将AsyncTask对象的FutureTask对象交与 SerialExecutor执行线程任务。FutureTask对象的构造需要一个Callable对象。在AsyncTask中是mWorker
+  - 将AsyncTask对象的FutureTask对象交与 SerialExecutor执行线程任务。FutureTask对象的构造需要一个Callable对象。在AsyncTask中是m    mWorker,mWorker是WorkerRunnable抽象类对象（实现Callabel接口），mWorker在AsyncTask构造方法时初始化赋值（就是在其call方法中调用
+   doInbackGround()方法。如下所示：
 
     ```java
     mWorker = new WorkerRunnable<Params, Result>() {
@@ -47,7 +48,7 @@ AsyncTask是一个Android中用于多线程任务类。可以通过实现类（�
 
 属性:
 
-- 定义了一个存放Runnable对象的双向队列Deque对象mTask
+- AsyncTask的静态内部类，定义了一个存放Runnable对象的双向队列Deque对象mTask
 - Runnable对象mActive,用于执向在执行的runnable;			
 
 实现的Executor接口，即实现其execute(Runnable runnable)方法。他的内部逻辑是重新包装runnable（新建一个Runnable对象，该Runnable对象直接执行接收到的runnable的run方法）。把新的Runnable对象添加到双向队列mTask(尾部插入),而后判断mActive是否为NULL，如果为NULL则从双向队列的头部删除并取出一个runnable，取出的runnable交与Async中默认的ThreadPoolExecutor对象去真正开启线程执行操作。
