@@ -212,7 +212,7 @@ class InterceptiorB implements Interceptor{
   - Connection 是否长连接
   - User-Agent 请求方请求工具信息
 - CacheInterceptor 做缓存处理
-- ConnectInterceptor 通过streamAllocation初始化httpCodec、connection。主要通过这几个对象实现流的读写。
+- ConnectInterceptor 通过streamAllocation初始化httpCodec、connection，复用连接池中的连接或新建socket连接。
 - CallServerInterceptor 执行真正的连接传输获取数据。通过httpCodec的两个对象进行读写，HttpCodec有两个实现类分别支持http1.1、http2
   ```java
     //okio包下的类
