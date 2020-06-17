@@ -219,4 +219,8 @@ class InterceptiorB implements Interceptor{
     final BufferedSource source; //读
     final BufferedSink sink; //写
   ```
+  在这个拦截器中在进行请求前有这样一个判断,是因为在post大数据时可以先询问服务器是否接受这样的请求，如果接受或在一定时间内没响应则post
+  ```java
+  "100-continue".equalsIgnoreCase(request.header("Expect"))
+  ```
 
