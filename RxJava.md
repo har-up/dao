@@ -9,17 +9,17 @@
 响应式编程特点：
 - 异步编程：提供合适的异步编程模型，充分挖掘多核cpu的能力，提升程序效率，降低延迟和阻塞。
 - 数据流：基于数据流模型，提供一套接口，用于数据流的转化和传播订阅
-### RxJava
-#### Rx的由来
+## RxJava 简介 
+### Rx的由来
 Rx是Reactige Extensions的缩写，最初由LIQN的一个扩展，由微软的一个团队开发，目的是提供一个统一的接口帮助开发者更方便的处理异步数据流问题。
 Rx库起初只支持NET,javascript,c++,应其实用性目前几乎所有的编程语言都有支持。
 
-#### Rx模式
+### Rx模式
 - 创建： 方便的创建数据流
 - 组合： 提供一系列接口对原始数据流进行转化
 - 监听： 通过订阅来监听数据流
 
-#### RxJava Hello World
+### RxJava Hello World
 ```java
   //核心元素   通过Observable 创建一个数据流（可观察对象） 一个观察者Consumer   订阅subscribe（进行关联）
   Observable.create(new ObservableOnSubscribe<String>() {
@@ -35,3 +35,94 @@ Rx库起初只支持NET,javascript,c++,应其实用性目前几乎所有的编�
         });
  Observable.just("hello world").subscribe(ToastUtils::showText);
 ```
+
+## RxJava 基础
+### Observable 
+    可以发送0或n个数据源，以成功和错误事件结束
+    Rxjava的使用通常需要三步
+    - 创建Observable（可观察对象）
+    - 创建Observer (观察者）
+    - subscribe (订阅)，使Observable 和 Observer建立关联
+      subscribe有多个重载的方法
+    ```java
+    subscribe(onNext);
+    subscribe(onNext,onError);
+    subscribe(onNext,onError,onComplete);
+    subscribe(onNext,onError,onComplete,onSubscribe);
+    ```
+  在RxJava中，只有使用了subscribe()，被观察者才会开始发送数据。
+#### Hot Observable 和 Cold Observable
+     - Hot Observable无论有没有订阅者，事件都会发生，当有多个订阅者时，多个订阅者共同想用一个数据流信息
+     - Cold Observbale只有设置了订阅者，才会开始执行发送数据流，且订阅者独享数据流
+       有个很形象的比喻：Hot Observable像广播，听众听到的是同一个声音。Cold收音机，人们听到的是自己的收音机声音。
+##### 二者的转化
+      - publish() Cold Observable转变为Hot Observable,将原来Observable转变为ConnectableObservable
+      - Subject/Processor Cold -> Hot。Subject和Processor的作用相同。Processor是rxjava 2.0新增的类，继承Flowable支持背压。
+        > Subject及时Observable又是Observer,Rx官网称可以将Subject看做一个桥梁或代理
+        > Subject 作为一个 Observable 时，可以不 地调用 onNext（）来发送事件，直至遇到 onComplete() 才会结束。
+        > Subject的分类
+          - SyncSubject
+            Observer 会接 AsyncSubject onComplete（）之前的最后一个数据
+          - BehaviorSubject
+            Observer会先接收subject调用onComplete之前的最后一个数据（调用subject.onComplete之后才开始发射数据），然后接收之前的数据
+          - ReplySubject
+            ReplaySubject 会发射所有来自原始 Observable 的数据给观察者，无论它们是何时订阅的。  
+          - PublishSubject
+            Observer 只接收PublishSubject 被订阅之后发送的数据  
+          
+          
+      - refCount ConnectableObservable的refCount可以将Hot Observable转化为 Cold Observable  
+      - share share操作符封装了publish().refCount()操作
+      
+  
+### Flowable
+    Flowable是rxjava 2.x中新增的观察者，可以发送0或n个数据源，以成功和错误事件结束，支持背压，控制发射数据的速率
+    一般使用场景：
+    - 处理以某种方式产生超过10kb的元素
+    - 文件读取与分析
+    - 读取数据库记录
+    - 网络io流
+    - 响应式非阻塞接口
+    
+
+### Single
+    只发射单个数据或错误事件，只有onSuccess和onError事件，onSuccess用于发射数据
+### Completable
+    不发送数据，只处理onComplete和onError事件
+### Maybe
+    可以发送0或1个数据，要么成功，要么失败
+    
+### do操作符
+    do操作符可以给Observable生命周期的各个阶段增加回调，相当于生命周期钩子
+    生命周期钩子有如下
+    - doOnSubscribe 建立订阅时调用（最开始回调的钩子）
+    - doOnLifeCycle 建立订阅后可以在该回调中取消
+    - doOnNext Observable每发送一次数据就会触发该回调，它的Consumer接受发射的数据
+    - doOnEach Observable每发送一次数据就会触发该回调，它的Consumer接受发射的数据，不仅onNext，还有onError,onComplete
+    - doAfterNext 在onNext之后执行
+    - doOnComplete Observable在正常终止时调用
+    - doFinally Observable在正常或异常终止时调用
+    - doAfterTerminate 注册一个Action,当Observable调用onComplete或onError时调用
+
+## 创建操作符
+  - just
+    将一个或多个对象转换成发射这个或多个对象的Observable
+  - from
+    根据数据来源(Iterable,Future,数组)来转换成发射这些数据的Observable
+  - create
+    从头开始创建一个Observable
+  - defer
+    只有当订阅者订阅才创建Observable,为每个订阅者都创建一个Observable
+  - range
+    创建一个发射指定范围整数序列的Observable
+  - interval
+    创建一个按照一定的时间间隔发射整数序列的Observable
+  - timer
+    创建一个在给定的时间后发射单个数据的Observable
+  - empty
+    创建一个什么都不做，直接通知完成的Observable
+  - error
+    创建一个什么都不做，直接通知错误的Observable
+  - never
+    创建一个不发射任何数据的Observable
+  
