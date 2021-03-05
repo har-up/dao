@@ -126,3 +126,19 @@ Rx库起初只支持NET,javascript,c++,应其实用性目前几乎所有的编�
   - never
     创建一个不发射任何数据的Observable
   
+
+
+## Rxjava的线程操作
+### Scheduler 调度器
+- Rxjava 线程介绍
+  Rxjava默认的是在当前线程工作，即在当前线程发射数据，也在当前线程进行监听处理。但为了更好的提升性能和速度，我们需要在其他线程做任务繁重的工作，只需在前台线程做监听就好。
+  
+- Scheduler
+  Scheduler是一个抽象类，在Rxjava中作为线程控制器。Rxjava中也内置了多个实现：
+  - single 单个线程重复利用
+  - newThread 每次启动一个新的线程
+  - computation 使用固定的线程池
+  - io  适合io操作（读写文件，网络请求，读写数据库等），io内部实现是一个无数量限制的线程池，可以重用空闲的线程
+  - trampoline  直接在当前线程运行，如果当前线程有其他任务在运行则会先暂停其他任务
+  - Schedulers.from 自定义一个Executor来作为调度器
+  
