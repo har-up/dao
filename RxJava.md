@@ -141,4 +141,24 @@ Rx库起初只支持NET,javascript,c++,应其实用性目前几乎所有的编�
   - io  适合io操作（读写文件，网络请求，读写数据库等），io内部实现是一个无数量限制的线程池，可以重用空闲的线程
   - trampoline  直接在当前线程运行，如果当前线程有其他任务在运行则会先暂停其他任务
   - Schedulers.from 自定义一个Executor来作为调度器
+
+## Rxjava的变换和过滤操作符
+  ### map 和 flatmap
+      map对每一个发射的数据做处理，返回处理的数据即可，flatMap用于返回一个Observable
+  ### groupBy
+      用于对发射的数据根据条件来进行分组
+  ### buffer和window
+      缓存给定数量的数据，指定数量的一并发射
+  ### first和last
+      只发射第一个或最后一个数据；或第一个最后一个满足条件的数据
+  ### takeFirst和takeLast
+      发射前n和或后n个数据
+  ### skip和skipLast
+      跳过前n个或后n个数据
+  ### elementAt和ingoreElment
+      忽略某个指定的数据，以及只发射指定的数据
+  ### filter和distinct
+      对数据进行去重或根据判断来警醒过滤
+  ### debounce  
+      给定的时间只发射一个数据，可以用于防止数据量发射太快
   
