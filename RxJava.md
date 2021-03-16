@@ -162,3 +162,61 @@ Rx库起初只支持NET,javascript,c++,应其实用性目前几乎所有的编�
   ### debounce  
       给定的时间只发射一个数据，可以用于防止数据量发射太快
   
+
+## 条件操作符和布尔操作符
+### boolean操作符
+    boolean操作符可以判定observable发射的数据是否满足某一个条件，使得observable的观察者可以得到一个boolean类型回调。
+    - all
+      是否observable发射的所有数据都满足条件
+    - contains
+      observable发射的数据是否包含某个值
+    - amb
+      针对多个observable,只发射首先发送给amb的observable的所有数据。
+      例如observable a 发射 1 2 3；observable b 发射 4 5 6。使用amb操作符后可以是先发射a的数据也可以发射b的数据，但只发射a,b中的一个。
+    - sequenceEqual
+      判定两个Observable是否发射相同的数据 
+### 条件操作符
+    - defaultEmpty
+      如果Observable没有发射任何数据则发射一个给定的默认的值
+    - skipUtil
+      跳过发射Observable a的数据直到Observable b发射满足某个条件时
+    - skipWhile
+      和skipUtil相反，跳过发射Observable a的数据 直到 Observable b不满足某个条件
+    - takeUtil
+      Observable a发射数据，但只要Observable b发送了一个数据或通知则a不再发射数据
+    - takeWhile
+      Observable a发射元素数据，直到发射的数据不满足某个条件
+
+## 合并操作符和连接操作符
+### 合并操作符
+    - merge
+      合并两个Observable为一个Observable发射它们的所有数据，这些数据按顺序发射
+    - zip
+      将多个Observable的发射值结合在一起
+### 连接操作符
+    - combineLastest
+      有点类似于merge,zip是只有当原始的Observable中的每一个都发射了一条数据时才发射数据，任何一个Observable发了一条数据时， combineLatest使用
+      个函数结合它最近发射 数据，然后发射这个函数返回值。
+    - join
+      将多个Observable的发射值以交集的情况发射组合数据
+    - startWith
+      将Observable的开头插入一个指定的数据
+    - connect
+    - push
+    - refCount
+    - reply
+    对于连接操作符，有一个很重要的概念 connectablObservable--可连接的 Observable 在被订阅时并不发射数据，只有在它的 connect（）被调用时才开始发射数据。
+
+## 背压
+   当被观察者发送数据量过大时，观察者来不及响应处理数据，这就是背压的情况
+   Rxjava1中当发射的数据量大于16时就会报背压的错误
+   Rxjava2中使用Flowable来支持背压，默认支持128的数据量。
+   在Rxjava2的Flowable中可以通过配置背压策略来使用现实场景
+   - MiSSING
+   - Error
+   - Buffer
+     可以无限发射不会报背压的错误，但会导致OOM
+   - Drop
+     如果异步缓存池满了，则丢弃后面发射的数据
+   - Latest
+     丢弃已经放入缓存池中的数据
