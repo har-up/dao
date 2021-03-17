@@ -214,6 +214,7 @@ Rx库起初只支持NET,javascript,c++,应其实用性目前几乎所有的编�
    在Rxjava2的Flowable中可以通过配置背压策略来使用现实场景
    - MiSSING
    - Error
+     直接报错
    - Buffer
      可以无限发射不会报背压的错误，但会导致OOM
    - Drop
