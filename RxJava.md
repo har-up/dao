@@ -221,3 +221,29 @@ Rx库起初只支持NET,javascript,c++,应其实用性目前几乎所有的编�
      如果异步缓存池满了，则丢弃后面发射的数据
    - Latest
      丢弃已经放入缓存池中的数据
+
+
+## Disposable和Transformer
+### Disposable
+    Disposable是用于取消订阅的，当Observable被订阅时会返回一个Disposable对象，可以通过Disposable在合适的时机取消订阅，从而释放资源。
+    Rxjava2中还有一个CompositeDisposable容器，用于存放Disposable对象，在某个合适的时机统一取消订阅多个Disposable对象，释放资源。
+    - RxLifecycle
+      一个针对android生命周期问题，方便取消订阅的成熟的库
+    - AutoDispose
+      可以在Android平台上使用，也可以在后台使用，使用范围更广的取消订阅封装库
+### Transformer
+    Transformer可以将Observable、Flowable、Single、Completeable、Maybe中的任何一个转换为另外一个
+    - transofrmer与compose
+      compse能够从数据流中获取原始的被观察者Observable,可以和Transormer结合封装一些固定的用法，使代码更简洁
+    
+
+## Rxjava的并行操作
+   - flatmap和scheduler
+     当前多种设备都拥有多核处理器，可以同时处理某一个任务，从而节省时间，提升效率。我们之前对Observable的使用虽然有多线程之前的切换，但发射的数据都没有并行发射。
+     java8中可以通过并行流paralleStream来实现并行的效果；Rxjava2中可以通过借助flatmap和computain作为Schedule一起结合来实现并行的效果
+   
+   - Round-Robin
+     是一种简单的负载均衡算法，原理是将用户的请求轮流分配给内部的服务器。
+     在rxjava中可以将数据按照线程数进行分组，每组的数据量相同，分组后一起发射，这样做可以减少Observable的创建，从而节省系统资源，但是会增加分组计算时间。
+        
+    
