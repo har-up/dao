@@ -145,7 +145,7 @@ Rx库起初只支持NET,javascript,c++,应其实用性目前几乎所有的编�
 
 ## Rxjava的变换和过滤操作符
   ### map 和 flatmap
-      map对每一个发射的数据做处理，返回处理的数据即可，flatMap用于返回一个Observable
+      map对每一个发射的数据做转换处理，返回处理的数据即可，flatMap用于返回一个Observable，可以使用flatMap来实现同步请求，同样的还有concatMap，concatMap保证了顺序
   ### groupBy
       用于对发射的数据根据条件来进行分组
   ### buffer和window
