@@ -69,6 +69,124 @@
   ```
 
 ## 序列化方案
+- Serializable
+- Parcelable
+- Protocol Buffer
+- Twitter/Serial
+> 常见问题
+  - 父类的序列化问题
+    可以在子类中序列化也可以在父类中序列化，子类中别忘记调用父类的序列化，super.writeToParacel(transient关键字可以避免变量被序列化)
+  - 类型转换异常
+    若存入的数据类型为子类的数组，则取出的数据类型为父类数组，无法强转为子类
+    数组类型是不支持向下强制转型的
+  - 重复启动问题
+    如果Activity已经在任务栈中，再次调用startActivity，在onResume中获取到的Intent会还是第一次的，不是startActivity传过来的；建议通过onNewIntent回调来
+    获取新的Intent,然后调用setIntent方法充值Intent
 
+  - 传递大对象
+    Intent在传递数据时是有大小限制的，一般超过1MB就会异常，尽量不要将bitmap对象放进Intent传递。
+    解决方案：建立一个存储器
+    ```java
+    public class Model implements Parcelable {
+    
+    protected Model(Parcel in) {
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        int i = ModelStorage.getInstance().putModel(this);
+        dest.writeInt(i);
+    }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Model> CREATOR = new Creator<Model>() {
+        @Override
+        public Model createFromParcel(Parcel in) {
+            return ModelStorage.getInstance().getModel(in.readInt());
+        }
+
+        @Override
+        public Model[] newArray(int size) {
+            return new Model[size];
+        }
+    };
+    }
+    public class ModelStorage {
+
+    private static ModelStorage mInstance = null;
+    private Map<Integer, Model> map = new ArrayMap<>();
+
+    public static ModelStorage getInstance() {
+        if (mInstance == null) {
+            synchronized (ModelStorage.class) {
+                if (mInstance == null) {
+                    return new ModelStorage();
+                }
+            }
+        }
+        return mInstance;
+    }
+
+    private ModelStorage() {
+    }
+
+    public int putModel(Model model) {
+        if (map.containsValue(model)) {
+            for (Map.Entry<Integer, Model> entry : map.entrySet()) {
+                if (entry.getValue() == model) {
+                    return entry.getKey();
+                }
+            }
+            return 0;
+        } else {
+            int index = map.size();
+            map.put(index, model);
+            return index;
+        }
+    }
+
+    public Model getModel(int key) {
+        if (map.size() == 0) {
+            return null;
+        }
+        return map.remove(key);
+    }
+    }
+    ```
+
+## 传值库-Parceler
+聚美优品的jumeiRdGroup/parceler
+- 降低Key的维护成本
+  目前维护Intent的key的很多做法是维护一个统一的类存放Intent的key,这样做存在一些问题
+  - 开发者需要维护Key和两个Activity的关系
+  - 如果是组件化方案，阿么每个组件需要自定义自己的Key文件
+  - 多个Activity 可能有相同的Key，存在重命名一个Key而影响其他Key的逻辑隐患
+  解决方案：在Activity中建立私有的Key，提供startActivity的静态方法，提升Activity的内聚性
+  
+- 自动维护Inteng的key
+  当一个Activity中需要传入大量的值时，编写Key和取值将是一个繁琐的过程
+  通常情况下Key和变量的name是有对应关系的，那么我们可以使定义变量的时候自动生成Key，这便是注解的功能之一。
+  Parceler库提供了注解@Arg,这个注解会做到根据变量名自动生成对应的Key
+
+- Jetpack中的自动化
+  Jetpack中的Navigation中提供了类似的自动生成方案
+- 自动保存状态
+  Parceler提供了onSaveInstanceState()和onRestoreInstanceState()方法的存取方法，用于解决数据在异常情况下保存和恢复的问题
+  
+- 处理ClassCastException
+  Intent会有一些类型转换方面的问题
+  - 存入StringBuffer/StringBuilder，得到String
+  - 存入Parcelable子类的数组，得到parcelable[]
+  - 存入charSequence子类的数组，得到CharSequence[]
+  - 存入HashMap的子类，得到HashMap
+  针对上述问题，Parceler在取值时调用了wrapCast()方法进行了类型的处理
+
+- IntentLauncher
+  Parceler提供的一个简单的工具类，方便跳转调用
+
+- 统一存取的API
+  
