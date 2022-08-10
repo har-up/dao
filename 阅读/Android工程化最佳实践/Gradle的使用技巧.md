@@ -342,4 +342,155 @@ if(BuildConfig.IS_FOR_TEST){
 - 内侧版本用特定的icon
 不同的Flavor在目录结构中可以映射不同的文件夹，可以子src中建立以Flavor命名的包，然后在里面针对Flavor做私有的操作。
 比如在main同级目录建立一个 innerTest 的文件夹，将特定的icon放在该目录下的res 文件夹下的 图片目录下。
-如果要建立开发或测试环境的应用，可以继承原本应用，然后做差异化处理
+如果要建立开发或测试环境的应用，可以继承原本应用BaseApplication，然后做差异化处理。
+很多时候也可以把不必要打包到正式版本中的类定义在innerTest的src文件夹下，这种方法的灵活性很大，可以多多尝试。
+
+- 不同渠道，不同包名
+```gradle
+ flavorDimensions 'isfree', 'channel', 'sex'
+    productFlavors {
+        free {
+            dimension 'isfree'
+            applicationIdSuffix '.test'
+        }
+        paid {
+            dimension 'isfree'
+            applicationIdSuffix '.dev'
+            versionNameSuffix 'test'
+        }
+    }
+```
+包名和签名决定一个App的唯一性，通过这种方式，可以在手机上同时安装测试版本和正式版本
+
+- 自动填充版本信息
+nillith/AutoVersion
+
+## 远程依赖
+- 配置Maven仓库
+
+- 依赖相关的API
+  - api 类似compile 编译时依赖和运行时依赖，支持依赖传递
+  - implementation 编译时依赖和运行时依赖，不支持依赖传递，底层module无法访问上层module依赖的库
+  - comileOnly 类似provided,仅仅在编译时进行依赖，不会将依赖打包到App中
+  - RuntimeOnly 仅仅将依赖打包到Apk中，但在编译时无法获取依赖
+  - AnnotationProcessor 类似apt 是注解处理器的依赖
+  - Test Implementation
+  - Flavor + API  针对某个Flavor的依赖
+
+- 组合依赖
+有时有一些库是一并以来的，删除是也是要一并剔除的，为了更好的整理，可以将强相关的依赖放在一起
+```gradle
+implementation ([
+        'com.github.one',
+        'com.github.two'
+])
+```
+
+- 依赖传递
+```gradle
+api('com.crshlytics.sdk.andriod:crashlytics:2.6.8@aar'){
+    transitive = true
+}
+```
+transitive=true的意思支持依赖传递
+
+- 依赖动态版本号
+可以用“版本名+” 或 “-SNAPHOT” 的方式来实现
+该功能一般不用，应为维护成本过大
+
+- 强制版本号
+有时候第三方的lib中用到了高版本的support包，而其可能存在一个问题，肯定不想因为这个lib而引入问题，更不想因为它而自动升级当前已有的包
+但gradle依赖的默认机制是有高版本就用高版本的。
+为了解决这个问题，可以用configurations配置指定库的版本。
+可以先在根build.gradle中配置一个task查看当前的依赖库的版本信息
+```gradle
+subprojects {
+    task allDeps(type:DependencyReportTask){}
+}
+```
+使用命令 _gradlew alldeps_ 就可以查看到当前依赖库的版本
+然后可以强制指定版本
+```gradle
+android {
+    
+    cofigurations.all {
+        resolutionStrategy.force "com.android.support:appcomoat-version**","****"
+    }
+}
+```
+
+- exclude关键字
+随着引用的库越来越多，各个库之间很可能会出现相互引用，Gradle的默认处理时在依赖分析的时候自动将多个相同库的最高版本作为最终依赖，但这不会永远是最优解。比如当一个jar包
+依赖了库A，而依赖的库B也有库A，这就会出现无法处理的冲突问题
+为了解决这类问题，可以通过exclude 关键字剔除某些依赖。
+```gradle
+    api deps.appcompat {
+        exclude group: 'com.android.support',module:'support-nanotations'
+    }
+```
+
+- 依赖管理
+如果一个项目依赖的库太多，依赖就会变得难以管理，特别是多个module依赖同一个库的时候，为了实现一次库升级全部module都生效目的，可以将库的版本号同一抽离放到一个地方激进型管理。
+
+- 本地依赖
+有时候有部分代码要给多个项目组公用，在不方便上传到仓库的时候可以做一个本地的aar包进行依赖
+依赖aar的方式如下：
+把aar包放到libs目录下 -> 在module的build.gradle文件中天机flatDir -> dependencies依赖
+```gradle
+implementation(name:'**',ext:'aar')
+```
+
+- 依赖module/jar
+依赖module：implementation project(':lib')
+如果module在多级目录中，则首先在setting.gradle中进行配置
+```gradle
+include ':app',':lib',':libraries:lib01',':libraries:lib02'
+```
+
+```gradle
+implementation project(':libraries:lib01')
+```
+依赖指定路径下的全部jar包
+```gradle
+implementation fileTree(dir: "libs", include: ["*.jar"])
+```
+> 如果用这种模糊依赖的话，只需要吧依赖放入目录中即可，但这会导致难以被git管理的问题。一般情况下，建议采用指定具体jar名的方式依赖
+
+- 自建本地仓库
+为了将自己本地的module以依赖的方式提供出去，将本机也变成仓库
+一个库通常具有的参数有groupId,artifactId,version,lastUpdated
+
+- 重新打包三方库
+shevek/jarjar
+它提供了gradle脚本来操作依赖的jar包
+```gradle
+implementation jarjar.repackage{
+    from '***'
+    classDelete ''
+    classRename ''
+}
+```
+
+## 资源管理
+gradle可以方便的配置资源文件，可以根据环境或逻辑来配置需要的androidManifest文件
+```gradle
+android{
+    sourceSets {
+        main {
+            //在需要单独调试的module的src/main目录下新建manifest目录和AndroidManifest文件
+            // 单独调试与集成调试时使用不同的 AndroidManifest.xml 文件
+            if (isModuleDebug.toBoolean()) {
+                manifest.srcFile 'src/main/manifest/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+            }
+        }
+    }
+}
+```
+做组件化或插件化的时候，为了不让资源重名，可以通过resourcePreFix固定每个module为资源前缀
+```gradle
+android{
+    resourcePreFix "test_"
+}
+```
