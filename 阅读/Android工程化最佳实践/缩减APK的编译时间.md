@@ -14,7 +14,7 @@ BuildTimTracker 是可以检查build耗时的gradle插件，会实时的显示�
 - Dexcount GradlePlugin
 一个可以监控Dex大小和方法数的gradle插件
 
-## 编译环境游湖
+## 编译环境优化
 - 升级硬件设备
 建议用m.2接口的ssd 和 16 * 2的3600内存，cpu尽量选用可以超频的
 - 升级软件
