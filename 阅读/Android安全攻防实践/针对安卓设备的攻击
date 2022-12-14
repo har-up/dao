@@ -1,0 +1,14 @@
+## 绕过锁屏
+条件：
+- 设备root
+- 打开了usb调试
+用户设置图案时，会将输入图案的散列值存储在/data/system 目录下的gesture.key文件中。
+这个文件只有root用户可以访问，因此，我们需要root权限
+可以移除和拉去文件，破解SHA1散列值：
+- 移除
+  ```shell
+  cd /data/system
+  rm gesture.key
+  ```
+
+- 
