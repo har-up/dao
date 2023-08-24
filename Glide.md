@@ -5,7 +5,7 @@ Glide.with(context).load(url).into(target);
   1.内部有判断Glide单例是否存在的逻辑，如果glide实例为null，则会走创建新实例的逻辑。其中有个细节是会通过反射获取是否有自定义的AppGlideModule，如果有则反射生成一个自定义的AppGlideModule实例；
   则会走一下自定义appGlideModule的registerComponents回调。
 
-  2.会返回一个RequestManager()。如果context是Activity,Fragment,那么通过对应的fm去获取RequestManager（通过fm添加一个空白的fragment,然后通过这个空白的fragment入参到RequestManagerFactory.build（）来生成与context绑定的RequestManager。
+  2.会返回一个RequestManager()。如果context是Activity,Fragment,那么通过对应的fm去获取RequestManager（通过fm添加一个空白的fragment,然后通过这个空白的fragment获取lifecycle入参到RequestManagerFactory.build（）来生成与context绑定的RequestManager；这个lifeCycle是glide库自己封装了一层，把fragment的回调事件传递到自定义的lifecycle。)。
 ### 4级缓存
 - 活动资源 (Active Resources) - 现在是否有另一个 View 正在展示这张图片？
   在当前活动的activity或fragment中正在展示view，则会将其放在activeResource中，其中有一个死循环的线程不断地扫描去通过判断移除缓存。HashMap
