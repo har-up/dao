@@ -203,3 +203,24 @@ adb shell pm clear packagename
 ```shell
 adb shell pm clear-permission-flags PACKAGE_NAME PERMISSION_NAME user-set user-fixed
  ```
+
+## Android 12及以上触摸事件屏蔽
+关闭：
+```shell
+# A specific app
+adb shell am compat disable BLOCK_UNTRUSTED_TOUCHES com.example.app
+
+# All apps
+# If you'd still like to see a Logcat message warning when a touch would be
+# blocked, use 1 instead of 0.
+adb shell settings put global block_untrusted_touches 0
+```
+
+恢复默认 屏蔽
+```shell
+# A specific app
+adb shell am compat reset BLOCK_UNTRUSTED_TOUCHES com.example.app
+
+# All apps
+adb shell settings put global block_untrusted_touches 2
+```
