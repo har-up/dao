@@ -1,0 +1,147 @@
+# Android版本特性
+
+
+## Android 10
+### 分区存储
+为了让用户更好地管理自己的文件并减少混乱，
+以 Android 10（API 级别 29）及更高版本为目标平台的应用在默认情况下被授予了对外部存储空间的分区访问权限（即分区存储）。
+此类应用只能访问外部存储空间上的应用专属目录，以及本应用所创建的特定类型的媒体文件。
+
+### 在后台运行时访问设备位置信息需要权限
+为了让用户更好地控制应用对位置信息的访问权限，Android 10 引入了 ACCESS_BACKGROUND_LOCATION 权限。
+与 ACCESS_FINE_LOCATION 和 ACCESS_COARSE_LOCATION 权限不同，ACCESS_BACKGROUND_LOCATION 权限只会影响应用在后台运行时对位置信息的访问权限。
+
+### 随机分配 MAC 地址
+在搭载 Android 10 或更高版本的设备上，默认情况下，系统会传输随机分配的 MAC 地址。
+
+如果您的应用处理企业用例，平台会提供 API，用于执行与 MAC 地址相关的多项操作：
+获取随机分配的 MAC 地址：设备所有者应用和资料所有者应用可以通过调用 getRandomizedMacAddress() 检索分配给特定网络的随机分配 MAC 地址。
+获取实际的出厂 MAC 地址：设备所有者应用可以通过调用 getWifiMacAddress() 检索设备的实际硬件 MAC 地址。此方法对于跟踪设备队列非常有用。
+
+### 限制了对剪贴板数据的访问权限
+除非您的应用是默认的输入法 (IME) 或当前获得焦点的应用，否则它无法在 Android 10 或更高版本上访问剪贴板数据。
+
+### 对访问摄像头详情和元数据的权限实施了限制
+Android 10 更改了 getCameraCharacteristics() 方法默认返回的信息的广度。具体而言，您的应用必须具有 CAMERA 权限才能访问此方法的返回值中可能包含的设备特定元数据。
+
+### 对启用和停用 WLAN 实施了限制
+以 Android 10 或更高版本为目标平台的应用无法启用或停用 Wi-Fi。WifiManager.setWifiEnabled() 方法始终返回 false
+如果您需要提示用户启用或停用 Wi-Fi，请使用[设置面板](https://developer.android.google.cn/about/versions/10/features?hl=zh-cn#settings-panels)
+
+### 一些电话 API、蓝牙 API 和 WLAN API 需要精确位置权限
+如果您的应用以 Android 10 或更高版本为目标平台，则它必须具有 ACCESS_FINE_LOCATION 权限，才能使用 Wi-Fi API、Wi-Fi Aware API 或 Bluetooth API 中的多种方法。以下部分列出了受影响的类和方法
+TelephonyManager
+getCellLocation()
+getAllCellInfo()
+requestNetworkScan()
+requestCellInfoUpdate()
+getAvailableNetworks()
+getServiceState()
+TelephonyScanManager
+requestNetworkScan()
+TelephonyScanManager.NetworkScanCallback
+onResults()
+PhoneStateListener
+onCellLocationChanged()
+onCellInfoChanged()
+onServiceStateChanged()
+Wi-Fi
+WifiManager
+startScan()
+getScanResults()
+getConnectionInfo()
+getConfiguredNetworks()
+WifiAwareManager
+WifiP2pManager
+WifiRttManager
+蓝牙
+BluetoothAdapter
+startDiscovery()
+startLeScan()
+BluetoothAdapter.LeScanCallback
+BluetoothLeScanner
+startScan()
+
+
+### 手势导航
+从 Android 10 开始，用户可以在设备上启用手势导航。如果用户启用手势导航，则会影响设备上的所有应用，无论应用是否以 API 级别 29 为目标平台。例如，如果用户从屏幕边缘向内滑动，系统会将该手势解读为“返回”导航，除非应用针对屏幕的相应部分明确替换该手势
+
+## Android 11
+官方文档： https://developer.android.google.cn/about/versions/11/privacy/storage?hl=zh-cn
+### 隐私权限变更
+* 强制执行分区存储机制
+  以 Android 11 或更高版本为目标平台的应用始终会受分区存储行为的影响
+* 权限单次授权
+* 自动重置权限
+  如果用户在 Android 11 或更高版本上几个月未与应用互动，系统会自动重置应用的敏感权限
+* 后台位置信息访问权限
+  Android 11 更改了用户向应用授予后台位置信息权限的方式
+* 软件包可见性
+  Android 11 更改了应用查询同一设备上的其他已安装应用及与之互动的方式
+* 前台服务
+  Android 11 更改了前台服务访问位置信息、相机和麦克风相关数据的方式
+
+### 电话号码
+Android 11 更改了您的应用在读取电话号码时使用的与电话相关的权限。
+更改 READ_PHONE_STATE 的声明，以使您的应用仅在 Android 10（API 级别 29）及更低版本中使用该权限。
+添加 READ_PHONE_NUMBERS 权限。
+
+### 后台位置信息访问权限
+正如有关如何在运行时请求位置信息访问权限的指南中所述，您应该执行递增位置信息请求。如果您的应用以 Android 11 或更高版本为目标平台，系统会强制执行此最佳做法。如果您同时请求在前台访问位置信息的权限和在后台访问位置信息的权限，系统会忽略该请求，且不会向您的应用授予其中的任一权限。
+
+## Android 12
+官方文档：https://developer.android.google.cn/about/versions/12/summary?hl=zh-cn
+
+### 应用启动画面
+相关处理：https://developer.android.google.cn/guide/topics/ui/splash-screen/migrate?hl=zh-cn
+
+
+### activity 生命周期
+按下“返回”按钮时，不再finish根启动器 activity
+
+
+## Android 13
+### 通知的运行时权限
+Android 13（API 级别 33）引入了运行时通知权限：POST_NOTIFICATIONS。 此更改有助于用户专注于最重要的通知
+
+### 从剪贴板中隐藏敏感内容
+如果您的应用允许用户将敏感内容（例如密码或信用卡信息）复制到剪贴板，则必须在调用 ClipboardManager#setPrimaryClip() 之前向 ClipData 的 ClipDescription 添加一个标志。添加此标志可阻止敏感内容出现在内容预览中。
+
+### 可以关闭前台服务通知
+在搭载 Android 13 或更高版本的设备上，用户可以默认关闭与前台服务相关联的通知。
+
+### 性能测试
+Microbenchmark库： https://developer.android.google.cn/topic/performance/benchmarking/microbenchmark-overview?hl=zh-cn
+https://developer.android.google.cn/topic/performance/benchmarking/macrobenchmark-overview?hl=zh-cn
+提供了一系列性能测试实例
+
+```
+fun measureRepeated(
+    packageName: String,
+    metrics: List<Metric>,
+    compilationMode: CompilationMode = CompilationMode.DEFAULT,
+    startupMode: StartupMode? = null,
+    iterations: @IntRange(from = 1) Int,
+    setupBlock: MacrobenchmarkScope.() -> Unit = {},
+    measureBlock: MacrobenchmarkScope.() -> Unit
+): Unit 
+```
+## 概念
+
+### 数据和文件存储概览
+系统提供了以下几种保存应用数据的选项：
+
+* 应用专属存储空间
+  存储仅供应用程序使用的文件，分为内部存储卷的应用专属目录和外部存储卷的应用专属目录。内部存储卷的专属目录文件其他应用不能访问。
+  内部存储空间可以通过getFilesDir()或getCacheDir()访问；
+  外部存储空间可以通过getExternalFilesDir()或getExternalCacheDir()访问。
+
+* 共享存储
+  打算和其他应用共享的文件，如媒体，文档等其他文件。
+
+* SharedPreference
+  键值对形式存储私有的原始数据
+
+* 数据库
+  使用Room持久性数据库将结构化数据存储在专用数据库中
+
