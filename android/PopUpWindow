@@ -1,0 +1,24 @@
+   private PopupWindow getPopupWindow(String content) {
+        if (mPopupWindow == null) {
+            mPopupWindow = new PopupWindow(mContext);
+            mPopupWindow.setWidth(DisplayUtil.dip2px(mContext, 223));
+            mPopupWindow.setHeight(LayoutParams.WRAP_CONTENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mPopupWindow.setBackgroundDrawable(mContext.getDrawable(R.drawable.shape_bg_detail));
+            } else {
+                mPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#CCAAAAAA")));
+            }
+        }
+        mPopupWindow.setOutsideTouchable(true);
+        TextView textView = new TextView(mContext);
+        textView.setTextColor(Color.WHITE);
+        textView.setTextSize(12);
+        textView.setPadding(5, 3, 5, 3);
+        textView.setText(mTaskDesTv.getText());
+        mPopupWindow.setContentView(textView);
+        return mPopupWindow;
+    }
+
+
+ PopupWindowCompat.showAsDropDown(getPopupWindow(mTaskDesTv.getText().toString()), view, -mPopupWindow.getWidth() - 10,
+                    -(int) DisplayUtil.dp2px(getResources(), 15), Gravity.LEFT | Gravity.TOP);
